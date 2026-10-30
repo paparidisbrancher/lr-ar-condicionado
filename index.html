@@ -450,7 +450,7 @@ a,button{touch-action:manipulation}
 <section id="atendimento" data-screen-label="Atendimento e FAQ" aria-labelledby="atendimento-titulo" style="background:#FFFFFF;scroll-margin-top:68px">
   <div style="max-width:1200px;margin:0 auto;padding:clamp(64px,8vw,104px) clamp(20px,4vw,32px)">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:clamp(40px,6vw,96px);align-items:start">
-      <div style="position:sticky;top:120px">
+      <div style="position:{{ atendPos }};top:120px">
         <p style="display:flex;align-items:center;gap:10px;margin:0;font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#2F7698"><span aria-hidden="true" style="width:8px;height:8px;border-radius:50%;background:#FBC644;flex:none"></span>Atendimento</p>
         <h2 id="atendimento-titulo" style="margin:14px 0 0;font-family:'Manrope',ui-sans-serif,system-ui,sans-serif;font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.06;letter-spacing:-0.03em;color:#123E55;text-wrap:balance">Atendimento em Alpinópolis e região</h2>
         <p style="margin:20px 0 0;max-width:28em;text-wrap:pretty">Está em outra cidade da região? Informe sua localização no WhatsApp para consultar o atendimento.</p>
@@ -799,7 +799,7 @@ class Component extends DCLogic {
       menuOpen, menuClosed: !menuOpen, menuPanel: menuOpen && vw < 960, menuExpanded: menuOpen ? 'true' : 'false',
       toggleMenu: this.toggleMenu, closeMenu: this.closeMenu, menuBtnRef: this.menuBtnRef,
       showIndex: vw >= 768, indexGrid: vw >= 1100 ? 'repeat(6,minmax(0,1fr))' : 'repeat(3,minmax(0,1fr))',
-      isMobile: vw < 640, showBar: vw < 640 && scrolled && !menuOpen && lb === null,
+      atendPos: vw >= 960 ? 'sticky' : 'static', isMobile: vw < 640, showBar: vw < 640 && scrolled && !menuOpen && lb === null,
       temp, tempPos: ((temp - 16) / 14 * 100).toFixed(2) + '%',
       airflow: this.buildAirflow(this.animOn()),
       faq: faqV, toggleFaq: this.toggleFaq,
