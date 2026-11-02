@@ -22,6 +22,7 @@
 <script src="./support.js"></script>
 </head>
 <body>
+<noscript><p style="padding:24px;font:18px/1.5 system-ui">Para falar sobre o atendimento: <a href="https://wa.me/5535991780511">Pedir orçamento à LR</a>.</p></noscript>
 <x-dc>
 <helmet>
 <title>LR Ar Condicionado | Instalação e manutenção em Alpinópolis</title>
@@ -45,6 +46,8 @@ a[href="#conteudo"]{position:absolute;left:16px;top:-80px;z-index:200;padding:12
 a[href="#conteudo"]:focus{top:16px;color:#FFFFFF}
 @keyframes lrFlow{to{stroke-dashoffset:-208}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media (max-width:639px){html{scroll-padding-bottom:96px}input,select,textarea,button,a{scroll-margin-bottom:96px}}
+h1,h2,h3{text-wrap:balance}
 </style>
 </helmet>
 <div style="min-height:100vh;background:#FFFFFF;color:#23343D;font-family:'Inter',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;font-size:17px;line-height:1.6;overflow-x:clip">
@@ -628,8 +631,6 @@ const FAQ = ['q1', 'q2', 'q3', 'q4', 'q5'];
 class Component extends DCLogic {
   state = {
     vw: typeof window !== 'undefined' ? window.innerWidth : 1280,
-    scrolled: false,
-    formOnScreen: false,
     menuOpen: false,
     lb: null,
     faq: {},
@@ -650,26 +651,16 @@ class Component extends DCLogic {
   componentDidMount() {
     document.documentElement.lang = 'pt-BR';
     this._onResize = () => { cancelAnimationFrame(this._raf); this._raf = requestAnimationFrame(() => this.setState({ vw: window.innerWidth })); };
-    this._onScroll = () => { const s = window.scrollY > 560; if (s !== this.state.scrolled) this.setState({ scrolled: s }); };
     this._onKey = (e) => this.handleKey(e);
     window.addEventListener('resize', this._onResize);
-    window.addEventListener('scroll', this._onScroll, { passive: true });
     document.addEventListener('keydown', this._onKey);
-    this._onScroll();
-    const orc = document.getElementById('orcamento');
-    if (orc && 'IntersectionObserver' in window) {
-      this._io = new IntersectionObserver(([e]) => { if (e.isIntersecting !== this.state.formOnScreen) this.setState({ formOnScreen: e.isIntersecting }); });
-      this._io.observe(orc);
-    }
     this._seen = { t: this.props.temperaturaAlvo, a: this.props.animacoes };
     if (this.animOn()) this._startTimer = setTimeout(() => this.runTemp(30, this.target()), 700);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
-    window.removeEventListener('scroll', this._onScroll);
     document.removeEventListener('keydown', this._onKey);
-    if (this._io) this._io.disconnect();
     clearTimeout(this._startTimer); clearInterval(this._tempTimer); cancelAnimationFrame(this._raf);
     document.body.style.overflow = '';
   }
@@ -799,7 +790,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const { vw, scrolled, formOnScreen, menuOpen, lb, faq, form, errors, opened, temp } = this.state;
+    const { vw, menuOpen, lb, faq, form, errors, opened, temp } = this.state;
     const wa = {};
     Object.keys(LR.mensagens).forEach(k => { wa[k] = waLink(LR.mensagens[k]); });
     const fm = this.formMode();
@@ -820,7 +811,7 @@ class Component extends DCLogic {
       menuOpen, menuClosed: !menuOpen, menuPanel: menuOpen && vw < 960, menuExpanded: menuOpen ? 'true' : 'false',
       toggleMenu: this.toggleMenu, closeMenu: this.closeMenu, menuBtnRef: this.menuBtnRef,
       showIndex: vw >= 768, indexGrid: vw >= 1100 ? 'repeat(6,minmax(0,1fr))' : 'repeat(3,minmax(0,1fr))',
-      atendPos: vw >= 960 ? 'sticky' : 'static', isMobile: vw < 640, showBar: vw < 640 && scrolled && !formOnScreen && !menuOpen && lb === null,
+      atendPos: vw >= 960 ? 'sticky' : 'static', isMobile: vw < 640, showBar: vw < 640 && !menuOpen && lb === null,
       temp, tempPos: ((temp - 16) / 14 * 100).toFixed(2) + '%',
       airflow: this.buildAirflow(this.animOn()),
       faq: faqV, toggleFaq: this.toggleFaq,
